@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090914">
+<title>GTA 6 TV — Countdown</title>
+<style>
+:root{color-scheme:dark;--pink:#ff3f9b;--cyan:#43e8ff;--gold:#ffd36a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 10%,#57245f 0,transparent 38%),radial-gradient(ellipse at 85% 75%,#123f59 0,transparent 42%),linear-gradient(145deg,#080813,#151126 55%,#07131d);color:#fff;font-family:Arial,Helvetica,sans-serif;display:flex;align-items:center;justify-content:center;padding:22px}
+main{width:min(100%,900px);text-align:center}
+.brand{font-size:clamp(2.8rem,10vw,6.8rem);font-weight:1000;letter-spacing:-.08em;line-height:.9;text-transform:uppercase;text-shadow:4px 4px 0 #7b2b80,0 0 28px #ff3f9b88}
+.brand span{color:var(--cyan)}
+.tag{margin:18px 0 28px;color:#ffd5ec;letter-spacing:.28em;font-size:.78rem;text-transform:uppercase}
+.panel{border:1px solid #ffffff30;background:#080a18bb;backdrop-filter:blur(10px);border-radius:22px;padding:clamp(18px,4vw,34px);box-shadow:0 18px 70px #0008}
+h1{font-size:clamp(1.2rem,4vw,2rem);margin:0 0 22px;text-transform:uppercase;letter-spacing:.08em}
+.timer{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.unit{padding:16px 5px;border-radius:14px;background:linear-gradient(180deg,#ffffff13,#ffffff06);border:1px solid #ffffff20}
+.num{display:block;font-size:clamp(2rem,8vw,4.4rem);font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;text-shadow:0 0 18px #ffd36a55}
+.label{font-size:.68rem;letter-spacing:.15em;color:#c9c8dc;text-transform:uppercase}
+.release{margin:20px 0 0;color:#d8d7e8;font-size:.9rem}
+.media{margin-top:18px}
+video{width:100%;max-height:420px;background:#05050b;border-radius:14px;display:none}
+.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+label.file,button{border:1px solid #43e8ff88;background:#102333;color:#eafcff;border-radius:999px;padding:11px 16px;font-weight:700;font-size:.85rem}
+input{max-width:100%}
+.hint{color:#aaa9bd;font-size:.75rem;line-height:1.5;margin:16px auto 0;max-width:620px}
+footer{margin-top:18px;color:#aaa9bd;font-size:.72rem;letter-spacing:.12em}
+@media(max-width:430px){.timer{gap:6px}.unit{padding:12px 2px}.label{font-size:.58rem}}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">GTA <span>6</span> TV</div>
+  <div class="tag">Vice City • Countdown live</div>
+  <section class="panel">
+    <h1>Il lancio si avvicina</h1>
+    <div class="timer" aria-live="polite">
+      <div class="unit"><span class="num" id="days">000</span><span class="label">Giorni</span></div>
+      <div class="unit"><span class="num" id="hours">00</span><span class="label">Ore</span></div>
+      <div class="unit"><span class="num" id="minutes">00</span><span class="label">Minuti</span></div>
+      <div class="unit"><span class="num" id="seconds">00</span><span class="label">Secondi</span></div>
+    </div>
+    <p class="release" id="status">Uscita prevista: 19 novembre 2026</p>
+    <div class="media">
+      <video id="player" controls loop playsinline></video>
+      <div class="controls">
+        <label class="file">Scegli un tuo video <input id="videoFile" type="file" accept="video/*" hidden></label>
+      </div>
+      <p class="hint">Puoi caricare un video dal telefono per riprodurlo qui in loop. Il video scelto resta sul tuo dispositivo: per mostrarlo anche agli altri spettatori dovrà essere pubblicato online separatamente.</p>
+    </div>
+  </section>
+  <footer>GTA 6 TV • FAN COUNTDOWN • NON È UN CANALE UFFICIALE ROCKSTAR GAMES</footer>
+</main>
+<script>
+const target = new Date('2026-11-19T00:00:00+01:00').getTime();
+const pad = (n,l=2)=>String(n).padStart(l,'0');
+function tick(){
+  let diff=target-Date.now();
+  if(diff<=0){['days','hours','minutes','seconds'].forEach(id=>document.getElementById(id).textContent='00');document.getElementById('status').textContent='È ARRIVATO IL GIORNO DI GTA VI!';return;}
+  const d=Math.floor(diff/86400000); diff%=86400000;
+  const h=Math.floor(diff/3600000); diff%=3600000;
+  const m=Math.floor(diff/60000); const s=Math.floor((diff%60000)/1000);
+  document.getElementById('days').textContent=pad(d,3);
+  document.getElementById('hours').textContent=pad(h);
+  document.getElementById('minutes').textContent=pad(m);
+  document.getElementById('seconds').textContent=pad(s);
+}
+tick();setInterval(tick,250);
+document.getElementById('videoFile').addEventListener('change',e=>{
+ const f=e.target.files && e.target.files[0]; if(!f)return;
+ const v=document.getElementById('player'); if(v.dataset.url)URL.revokeObjectURL(v.dataset.url);
+ const u=URL.createObjectURL(f);v.dataset.url=u;v.src=u;v.style.display='block';v.play().catch(()=>{});
+});
+</script>
+</body>
+</html>
